@@ -109,7 +109,7 @@ locals {
 
       }
     })
-    if local.create_role_for_pipes && try(v.create_role, true)
+    if var.create_role_for_pipes && try(v.create_role, true)
   }
 
   service_integrations_for_pipes = {
