@@ -126,8 +126,20 @@ variable "bus_name" {
   default     = "default"
 }
 
+variable "bus_description" {
+  description = "Event bus description"
+  type        = string
+  default     = null
+}
+
 variable "event_source_name" {
   description = "The partner event source that the new event bus will be matched with. Must match name."
+  type        = string
+  default     = null
+}
+
+variable "kms_key_identifier" {
+  description = "The identifier of the AWS KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN."
   type        = string
   default     = null
 }
@@ -250,6 +262,12 @@ variable "role_tags" {
   default     = {}
 }
 
+variable "ecs_pass_role_resources" {
+  description = "List of approved roles to be passed"
+  type        = list(string)
+  default     = []
+}
+
 ###########
 # Policies
 ###########
@@ -336,6 +354,12 @@ variable "sns_target_arns" {
   description = "The Amazon Resource Name (ARN) of the AWS SNS's you want to use as EventBridge targets"
   type        = list(string)
   default     = []
+}
+
+variable "sns_kms_arns" {
+  description = "The Amazon Resource Name (ARN) of the AWS KMS's configured for AWS SNS you want Decrypt/GenerateDataKey for"
+  type        = list(string)
+  default     = ["*"]
 }
 
 variable "ecs_target_arns" {

@@ -227,7 +227,8 @@ locals {
 
     step_functions = {
       actions = [
-        "states:StartExecution"
+        "states:StartExecution",
+        "states:StartSyncExecution"
       ]
     }
 
@@ -260,7 +261,8 @@ locals {
 
     ecs = {
       actions = [
-        "ecs:RunTask"
+        "ecs:RunTask",
+        "ecs:TagResource"
       ]
     }
 

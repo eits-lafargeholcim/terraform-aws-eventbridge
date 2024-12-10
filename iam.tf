@@ -189,14 +189,18 @@ data "aws_iam_policy_document" "sns" {
     resources = var.sns_target_arns
   }
 
-  statement {
-    sid    = "SNSKMSAccess"
-    effect = "Allow"
-    actions = [
-      "kms:Decrypt",
-      "kms:GenerateDataKey"
-    ]
-    resources = ["*"]
+  dynamic "statement" {
+    for_each = length(var.sns_kms_arns) > 0 ? [1] : []
+
+    content {
+      sid    = "SNSKMSAccess"
+      effect = "Allow"
+      actions = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ]
+      resources = var.sns_kms_arns
+    }
   }
 
 }
@@ -227,9 +231,12 @@ data "aws_iam_policy_document" "ecs" {
   count = local.create_role && var.attach_ecs_policy ? 1 : 0
 
   statement {
-    sid       = "ECSAccess"
-    effect    = "Allow"
-    actions   = ["ecs:RunTask"]
+    sid    = "ECSAccess"
+    effect = "Allow"
+    actions = [
+      "ecs:RunTask",
+      "ecs:TagResource"
+    ]
     resources = [for arn in var.ecs_target_arns : replace(arn, "/:\\d+$/", ":*")]
   }
 
@@ -237,7 +244,7 @@ data "aws_iam_policy_document" "ecs" {
     sid       = "PassRole"
     effect    = "Allow"
     actions   = ["iam:PassRole"]
-    resources = ["*"]
+    resources = coalescelist(var.ecs_pass_role_resources, ["*"])
   }
 }
 
